@@ -105,7 +105,7 @@ this.Documentation = class Documentation {
     if (id.startsWith("http")) {
       return [id];
     } else {
-      return [`/microstudio.wiki/${lang}/${lang}-${id}.md`, `https://microstudio.dev/microstudio.wiki/${lang}/${lang}-${id}.md`];
+      return [`/microstudio.wiki/${lang}/${lang}-${id}.md`];
     }
   }
 
@@ -115,7 +115,7 @@ this.Documentation = class Documentation {
 The documentation for **${id}** could not be loaded from the local project files.
 
 - If you are running this project locally, the "microstudio.wiki" folder is probably missing.
-- The app also tried to load the online documentation, but that request failed too.
+- The local documentation route could not return the requested file.
 
 You can still open the official documentation here:
 

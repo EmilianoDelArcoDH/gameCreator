@@ -128,6 +128,20 @@ this.Server = class Server {
     app.use("/microstudio.wiki", express.static("../microstudio.wiki", {
       dotfiles: "ignore"
     }));
+    app.get(/^\/microstudio\.wiki\/.+$/, async (req, res, next) => {
+      var remoteURL, response;
+      remoteURL = `https://microstudio.dev${req.path}`;
+      try {
+        response = await fetch(remoteURL);
+        if (!response.ok) {
+          return res.status(response.status).send("");
+        }
+        res.set("Content-Type", response.headers.get("content-type") || "application/octet-stream");
+        return res.send(Buffer.from(await response.arrayBuffer()));
+      } catch (error) {
+        return next();
+      }
+    });
     app.use("/lib/fontlib/ubuntu", express.static("node_modules/@fontsource/ubuntu"));
     app.use("/lib/fontlib/ubuntu-mono", express.static("node_modules/@fontsource/ubuntu-mono"));
     app.use("/lib/fontlib/source-sans-pro", express.static("node_modules/@fontsource/source-sans-pro"));
