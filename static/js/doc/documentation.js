@@ -174,6 +174,7 @@ https://microstudio.dev/documentation/
       headerPrefix: "documentation_"
     });
     element.innerHTML = DOMPurify.sanitize(marked(this.doc));
+    this.applyBranding(element);
     list = element.getElementsByTagName("a");
     for (j = 0, len1 = list.length; j < len1; j++) {
       e = list[j];
@@ -183,6 +184,30 @@ https://microstudio.dev/documentation/
     //console.info lexer.lex @doc
     this.buildToc();
     return this.updateViewPos();
+  }
+
+  applyBranding(element) {
+    var attr, attrs, i, j, len1, len2, node, nodes, ref1;
+    nodes = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    ref1 = [];
+    while ((node = nodes.nextNode()) != null) {
+      ref1.push(node);
+    }
+    for (i = 0, len1 = ref1.length; i < len1; i++) {
+      node = ref1[i];
+      node.textContent = node.textContent.replace(/microStudio/g, "Digital House Game").replace(/Microstudio/g, "Digital House Game");
+    }
+    attrs = ["alt", "title"];
+    nodes = element.querySelectorAll("*");
+    for (j = 0, len2 = nodes.length; j < len2; j++) {
+      node = nodes[j];
+      for (i = 0, len1 = attrs.length; i < len1; i++) {
+        attr = attrs[i];
+        if (node.hasAttribute(attr)) {
+          node.setAttribute(attr, node.getAttribute(attr).replace(/microStudio/g, "Digital House Game").replace(/Microstudio/g, "Digital House Game"));
+        }
+      }
+    }
   }
 
   buildToc() {

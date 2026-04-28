@@ -131,6 +131,7 @@ class @Documentation
       baseUrl: "/microstudio.wiki/"
       headerPrefix: "documentation_"
     element.innerHTML = DOMPurify.sanitize marked @doc
+    @applyBranding element
 
     list = element.getElementsByTagName "a"
     for e in list
@@ -140,6 +141,22 @@ class @Documentation
     #console.info lexer.lex @doc
     @buildToc()
     @updateViewPos()
+
+  applyBranding:(element)->
+    nodes = document.createTreeWalker element,NodeFilter.SHOW_TEXT
+    list = []
+    while (node = nodes.nextNode())?
+      list.push node
+
+    for node in list
+      node.textContent = node.textContent.replace(/microStudio/g,"Digital House Game").replace(/Microstudio/g,"Digital House Game")
+
+    attrs = ["alt","title"]
+    nodes = element.querySelectorAll "*"
+    for node in nodes
+      for attr in attrs
+        if node.hasAttribute attr
+          node.setAttribute attr,node.getAttribute(attr).replace(/microStudio/g,"Digital House Game").replace(/Microstudio/g,"Digital House Game")
 
   buildToc:()->
     element = document.getElementById("documentation")
