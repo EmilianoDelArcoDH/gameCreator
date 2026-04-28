@@ -93,32 +93,67 @@ this.Documentation = class Documentation {
     }
   }
 
+  getDocumentationLanguage(lang) {
+    if (["fr", "de", "pl", "it", "pt", "ru", "en"].indexOf(lang) >= 0) {
+      return lang;
+    } else {
+      return "en";
+    }
+  }
+
+  getDocumentationUrls(id, lang) {
+    if (id.startsWith("http")) {
+      return [id];
+    } else {
+      return [`/microstudio.wiki/${lang}/${lang}-${id}.md`, `https://microstudio.dev/microstudio.wiki/${lang}/${lang}-${id}.md`];
+    }
+  }
+
+  getFallbackDocumentation(id) {
+    return `# Documentation unavailable
+
+The documentation for **${id}** could not be loaded from the local project files.
+
+- If you are running this project locally, the "microstudio.wiki" folder is probably missing.
+- The app also tried to load the online documentation, but that request failed too.
+
+You can still open the official documentation here:
+
+https://microstudio.dev/documentation/
+`;
+  }
+
   load(id = "Quickstart", callback = (function() {}), lang = this.app.translator.lang) {
-    var ref1, req, url;
+    var fetchURL, index, urls;
     if (this.sections[id] != null) {
       return callback(this.sections[id]);
     }
-    if ((ref1 = !lang) === "fr" || ref1 === "de" || ref1 === "pl" || ref1 === "it" || ref1 === "pt" || ref1 === "ru") {
-      lang = "en";
-    }
-    req = new XMLHttpRequest();
-    req.onreadystatechange = (event) => {
-      if (req.readyState === XMLHttpRequest.DONE) {
-        if (req.status === 200) {
-          this.sections[id] = req.responseText;
-          return callback(this.sections[id]);
-        } else if (lang !== "en") {
-          return this.load(id, callback, "en");
-        }
+
+    lang = this.getDocumentationLanguage(lang);
+    urls = this.getDocumentationUrls(id, lang);
+    index = 0;
+    fetchURL = () => {
+      var req, url;
+      if (index >= urls.length) {
+        this.sections[id] = this.getFallbackDocumentation(id);
+        return callback(this.sections[id]);
       }
+      url = urls[index++];
+      req = new XMLHttpRequest();
+      req.onreadystatechange = (event) => {
+        if (req.readyState === XMLHttpRequest.DONE) {
+          if (req.status === 200) {
+            this.sections[id] = req.responseText;
+            return callback(this.sections[id]);
+          } else {
+            return fetchURL();
+          }
+        }
+      };
+      req.open("GET", url);
+      return req.send();
     };
-    if (id.startsWith("http")) {
-      url = id;
-    } else {
-      url = `/microstudio.wiki/${lang}/${lang}-${id}.md`;
-    }
-    req.open("GET", url);
-    return req.send();
+    return fetchURL();
   }
 
   updateViewPos() {

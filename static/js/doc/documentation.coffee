@@ -66,29 +66,59 @@ class @Documentation
 
     return
 
+  getDocumentationLanguage:(lang)->
+    if lang in ["fr","de","pl","it","pt","ru","en"] then lang else "en"
+
+  getDocumentationUrls:(id,lang)->
+    if id.startsWith("http")
+      [id]
+    else
+      [
+        "/microstudio.wiki/#{lang}/#{lang}-#{id}.md"
+        "https://microstudio.dev/microstudio.wiki/#{lang}/#{lang}-#{id}.md"
+      ]
+
+  getFallbackDocumentation:(id)->
+    """
+    # Documentation unavailable
+
+    The documentation for **#{id}** could not be loaded from the local project files.
+
+    - If you are running this project locally, the "microstudio.wiki" folder is probably missing.
+    - The app also tried to load the online documentation, but that request failed too.
+
+    You can still open the official documentation here:
+
+    https://microstudio.dev/documentation/
+    """
+
   load:(id="Quickstart",callback=(->),lang=@app.translator.lang)->
     if @sections[id]?
       return callback @sections[id]
 
-    if not lang in ["fr","de","pl","it","pt","ru"]
-      lang = "en"
+    lang = @getDocumentationLanguage lang
+    urls = @getDocumentationUrls id,lang
+    index = 0
 
-    req = new XMLHttpRequest()
-    req.onreadystatechange = (event) =>
-      if req.readyState == XMLHttpRequest.DONE
-        if req.status == 200
-          @sections[id] = req.responseText
-          callback(@sections[id])
-        else if lang != "en"
-          @load(id,callback,"en")
+    fetchURL = =>
+      if index >= urls.length
+        @sections[id] = @getFallbackDocumentation id
+        return callback @sections[id]
 
-    if id.startsWith("http")
-      url = id
-    else
-      url = "/microstudio.wiki/#{lang}/#{lang}-#{id}.md"
+      url = urls[index++]
+      req = new XMLHttpRequest()
+      req.onreadystatechange = (event) =>
+        if req.readyState == XMLHttpRequest.DONE
+          if req.status == 200
+            @sections[id] = req.responseText
+            callback @sections[id]
+          else
+            fetchURL()
 
-    req.open "GET",url
-    req.send()
+      req.open "GET",url
+      req.send()
+
+    fetchURL()
 
   updateViewPos:()->
     sections = document.getElementById("help-sections")
