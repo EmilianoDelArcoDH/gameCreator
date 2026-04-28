@@ -7,10 +7,12 @@ this.Explore = class Explore {
       FORBID_TAGS: ['form', 'input', 'button', 'select', 'textarea'],
       FORBID_ATTR: ['formaction', 'target']
     });
-    this.get("explore-back-button").addEventListener("click", () => {
-      this.closeDetails();
-      return this.app.appui.setMainSection("home", true);
-    });
+    if (this.get("explore-back-button") != null) {
+      this.get("explore-back-button").addEventListener("click", () => {
+        this.closeDetails();
+        return this.app.appui.setMainSection("home", true);
+      });
+    }
     this.sort = "hot";
     this.active_tags = [];
     this.search = "";
@@ -30,40 +32,46 @@ this.Explore = class Explore {
         return b.date_published - a.date_published;
       }
     };
-    document.getElementById("explore-sort-button").addEventListener("click", () => {
-      var e, j, len, ref, s;
-      s = this.sort_types.indexOf(this.sort);
-      s = (s + 1) % this.sort_types.length;
-      this.sort = this.sort_types[s];
-      e = document.getElementById("explore-sort-button");
-      ref = this.sort_types;
-      for (j = 0, len = ref.length; j < len; j++) {
-        s = ref[j];
-        if (s === this.sort) {
-          e.classList.add(s);
-        } else {
-          e.classList.remove(s);
+    if (document.getElementById("explore-sort-button") != null) {
+      document.getElementById("explore-sort-button").addEventListener("click", () => {
+        var e, j, len, ref, s;
+        s = this.sort_types.indexOf(this.sort);
+        s = (s + 1) % this.sort_types.length;
+        this.sort = this.sort_types[s];
+        e = document.getElementById("explore-sort-button");
+        ref = this.sort_types;
+        for (j = 0, len = ref.length; j < len; j++) {
+          s = ref[j];
+          if (s === this.sort) {
+            e.classList.add(s);
+          } else {
+            e.classList.remove(s);
+          }
         }
-      }
-      document.querySelector("#explore-sort-button span").innerText = this.app.translator.get(this.sort.substring(0, 1).toUpperCase() + this.sort.substring(1));
-      return this.query();
-    });
-    document.getElementById("explore-type-button").addEventListener("click", () => {
-      var s;
-      s = this.project_types.indexOf(this.project_type);
-      s = (s + 1) % this.project_types.length;
-      this.setProjectType(this.project_types[s]);
-      return this.query();
-    });
-    document.getElementById("explore-search-input").addEventListener("input", () => {
-      this.search = document.getElementById("explore-search-input").value;
-      if (this.search_timeout != null) {
-        clearTimeout(this.search_timeout);
-      }
-      return this.search_timeout = setTimeout((() => {
+        document.querySelector("#explore-sort-button span").innerText = this.app.translator.get(this.sort.substring(0, 1).toUpperCase() + this.sort.substring(1));
         return this.query();
-      }), 1500);
-    });
+      });
+    }
+    if (document.getElementById("explore-type-button") != null) {
+      document.getElementById("explore-type-button").addEventListener("click", () => {
+        var s;
+        s = this.project_types.indexOf(this.project_type);
+        s = (s + 1) % this.project_types.length;
+        this.setProjectType(this.project_types[s]);
+        return this.query();
+      });
+    }
+    if (document.getElementById("explore-search-input") != null) {
+      document.getElementById("explore-search-input").addEventListener("input", () => {
+        this.search = document.getElementById("explore-search-input").value;
+        if (this.search_timeout != null) {
+          clearTimeout(this.search_timeout);
+        }
+        return this.search_timeout = setTimeout((() => {
+          return this.query();
+        }), 1500);
+      });
+    }
     document.getElementById("explore-contents").addEventListener("scroll", () => {
       var contents, h1, h2, pos, scrollzone;
       contents = document.getElementById("explore-box-list");
@@ -117,26 +125,31 @@ this.Explore = class Explore {
         });
       }
     });
-    document.querySelector("#explore-tags-bar i").addEventListener("click", () => {
-      var bar, icon;
-      bar = document.querySelector("#explore-tags-bar");
-      icon = bar.querySelector("i");
-      if (bar.classList.contains("collapsed")) {
-        bar.classList.remove("collapsed");
-        icon.classList.remove("fa-caret-right");
-        return icon.classList.add("fa-caret-down");
-      } else {
-        bar.classList.add("collapsed");
-        icon.classList.add("fa-caret-right");
-        return icon.classList.remove("fa-caret-down");
-      }
-    });
+    if (document.querySelector("#explore-tags-bar i") != null) {
+      document.querySelector("#explore-tags-bar i").addEventListener("click", () => {
+        var bar, icon;
+        bar = document.querySelector("#explore-tags-bar");
+        icon = bar.querySelector("i");
+        if (bar.classList.contains("collapsed")) {
+          bar.classList.remove("collapsed");
+          icon.classList.remove("fa-caret-right");
+          return icon.classList.add("fa-caret-down");
+        } else {
+          bar.classList.add("collapsed");
+          icon.classList.add("fa-caret-right");
+          return icon.classList.remove("fa-caret-down");
+        }
+      });
+    }
   }
 
   setProjectType(project_type) {
     var e, j, len, ref, s;
     this.project_type = project_type;
     e = document.getElementById("explore-type-button");
+    if (e == null) {
+      return;
+    }
     ref = this.project_types;
     for (j = 0, len = ref.length; j < len; j++) {
       s = ref[j];
@@ -347,9 +360,15 @@ this.Explore = class Explore {
       this.get("project-details-clonebutton").style.display = "inline-block";
     }
     document.title = this.app.translator.get("%PROJECT% - by %USER%").replace("%PROJECT%", p.title).replace("%USER%", p.owner);
-    this.get("explore-back-button").style.display = "inline-block";
-    this.get("explore-tools").style.display = "none";
-    this.get("explore-tags-bar").style.display = "none";
+    if (this.get("explore-back-button") != null) {
+      this.get("explore-back-button").style.display = "inline-block";
+    }
+    if (this.get("explore-tools") != null) {
+      this.get("explore-tools").style.display = "none";
+    }
+    if (this.get("explore-tags-bar") != null) {
+      this.get("explore-tags-bar").style.display = "none";
+    }
     this.get("explore-contents").style.display = "none";
     this.get("explore-project-details").style.display = "block";
     this.get("project-details-image").src = p.icon || p.type !== "example" ? location.origin + `/${p.owner}/${p.slug}/icon.png` : `${dev_domain}/img/lightbulb16.png`;
@@ -520,9 +539,15 @@ this.Explore = class Explore {
   }
 
   closeProject(p) {
-    this.get("explore-back-button").style.display = "none";
-    this.get("explore-tools").style.display = "inline-block";
-    this.get("explore-tags-bar").style.display = "block";
+    if (this.get("explore-back-button") != null) {
+      this.get("explore-back-button").style.display = "none";
+    }
+    if (this.get("explore-tools") != null) {
+      this.get("explore-tools").style.display = "inline-block";
+    }
+    if (this.get("explore-tags-bar") != null) {
+      this.get("explore-tags-bar").style.display = "block";
+    }
     this.get("explore-contents").style.display = "block";
     this.get("explore-project-details").style.display = "none";
     this.project = null;
@@ -532,7 +557,9 @@ this.Explore = class Explore {
   createTags(tags) {
     var div, j, len, ref, t;
     this.tags = tags;
-    document.getElementById("explore-tags").innerHTML = "";
+    if (document.getElementById("explore-tags") != null) {
+      document.getElementById("explore-tags").innerHTML = "";
+    }
     ref = this.tags;
     for (j = 0, len = ref.length; j < len; j++) {
       t = ref[j];
@@ -544,7 +571,9 @@ this.Explore = class Explore {
       //span = document.createElement "span"
       //span.innerText = t.count
       //div.appendChild span
-      document.getElementById("explore-tags").appendChild(div);
+      if (document.getElementById("explore-tags") != null) {
+        document.getElementById("explore-tags").appendChild(div);
+      }
       ((t, div) => {
         return div.addEventListener("click", () => {
           var index;

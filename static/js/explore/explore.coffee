@@ -6,9 +6,10 @@ class @Explore
       FORBID_ATTR: ['formaction', 'target']
     })
 
-    @get("explore-back-button").addEventListener "click",()=>
-      @closeDetails()
-      @app.appui.setMainSection "home",true
+    if @get("explore-back-button")?
+      @get("explore-back-button").addEventListener "click",()=>
+        @closeDetails()
+        @app.appui.setMainSection "home",true
 
     @sort = "hot"
     @active_tags = []
@@ -28,30 +29,33 @@ class @Explore
       top: (a,b)-> b.likes-a.likes
       new: (a,b)-> b.date_published-a.date_published
 
-    document.getElementById("explore-sort-button").addEventListener "click",()=>
-      s = @sort_types.indexOf @sort
-      s = (s+1)%@sort_types.length
-      @sort = @sort_types[s]
-      e = document.getElementById("explore-sort-button")
-      for s in @sort_types
-        if s == @sort
-          e.classList.add s
-        else
-          e.classList.remove s
-      document.querySelector("#explore-sort-button span").innerText = @app.translator.get @sort.substring(0,1).toUpperCase()+@sort.substring(1)
-      @query()
+    if document.getElementById("explore-sort-button")?
+      document.getElementById("explore-sort-button").addEventListener "click",()=>
+        s = @sort_types.indexOf @sort
+        s = (s+1)%@sort_types.length
+        @sort = @sort_types[s]
+        e = document.getElementById("explore-sort-button")
+        for s in @sort_types
+          if s == @sort
+            e.classList.add s
+          else
+            e.classList.remove s
+        document.querySelector("#explore-sort-button span").innerText = @app.translator.get @sort.substring(0,1).toUpperCase()+@sort.substring(1)
+        @query()
 
-    document.getElementById("explore-type-button").addEventListener "click",()=>
-      s = @project_types.indexOf @project_type
-      s = (s+1)%@project_types.length
-      @setProjectType @project_types[s]
-      @query()
+    if document.getElementById("explore-type-button")?
+      document.getElementById("explore-type-button").addEventListener "click",()=>
+        s = @project_types.indexOf @project_type
+        s = (s+1)%@project_types.length
+        @setProjectType @project_types[s]
+        @query()
 
-    document.getElementById("explore-search-input").addEventListener "input",()=>
-      @search = document.getElementById("explore-search-input").value
-      if @search_timeout?
-        clearTimeout @search_timeout
-      @search_timeout = setTimeout (()=>@query()),1500
+    if document.getElementById("explore-search-input")?
+      document.getElementById("explore-search-input").addEventListener "input",()=>
+        @search = document.getElementById("explore-search-input").value
+        if @search_timeout?
+          clearTimeout @search_timeout
+        @search_timeout = setTimeout (()=>@query()),1500
 
     document.getElementById("explore-contents").addEventListener "scroll",()=>
       contents = document.getElementById "explore-box-list"
@@ -99,20 +103,22 @@ class @Explore
             else
               likes.classList.remove "voted"
 
-    document.querySelector("#explore-tags-bar i").addEventListener "click",()=>
-      bar = document.querySelector("#explore-tags-bar")
-      icon = bar.querySelector "i"
-      if bar.classList.contains "collapsed"
-        bar.classList.remove "collapsed"
-        icon.classList.remove "fa-caret-right"
-        icon.classList.add "fa-caret-down"
-      else
-        bar.classList.add "collapsed"
-        icon.classList.add "fa-caret-right"
-        icon.classList.remove "fa-caret-down"
+    if document.querySelector("#explore-tags-bar i")?
+      document.querySelector("#explore-tags-bar i").addEventListener "click",()=>
+        bar = document.querySelector("#explore-tags-bar")
+        icon = bar.querySelector "i"
+        if bar.classList.contains "collapsed"
+          bar.classList.remove "collapsed"
+          icon.classList.remove "fa-caret-right"
+          icon.classList.add "fa-caret-down"
+        else
+          bar.classList.add "collapsed"
+          icon.classList.add "fa-caret-right"
+          icon.classList.remove "fa-caret-down"
 
   setProjectType:(@project_type)->
     e = document.getElementById("explore-type-button")
+    return if not e?
     for s in @project_types
       if s == @project_type
         e.classList.add s
@@ -290,9 +296,12 @@ class @Explore
 
     document.title = @app.translator.get("%PROJECT% - by %USER%").replace("%PROJECT%",p.title).replace("%USER%",p.owner)
 
-    @get("explore-back-button").style.display = "inline-block"
-    @get("explore-tools").style.display = "none"
-    @get("explore-tags-bar").style.display = "none"
+    if @get("explore-back-button")?
+      @get("explore-back-button").style.display = "inline-block"
+    if @get("explore-tools")?
+      @get("explore-tools").style.display = "none"
+    if @get("explore-tags-bar")?
+      @get("explore-tags-bar").style.display = "none"
     @get("explore-contents").style.display = "none"
     @get("explore-project-details").style.display = "block"
 
@@ -434,16 +443,20 @@ class @Explore
     div
 
   closeProject:(p)->
-    @get("explore-back-button").style.display = "none"
-    @get("explore-tools").style.display = "inline-block"
-    @get("explore-tags-bar").style.display = "block"
+    if @get("explore-back-button")?
+      @get("explore-back-button").style.display = "none"
+    if @get("explore-tools")?
+      @get("explore-tools").style.display = "inline-block"
+    if @get("explore-tags-bar")?
+      @get("explore-tags-bar").style.display = "block"
     @get("explore-contents").style.display = "block"
     @get("explore-project-details").style.display = "none"
     @project = null
     @closed()
 
   createTags:(@tags)->
-    document.getElementById("explore-tags").innerHTML = ""
+    if document.getElementById("explore-tags")?
+      document.getElementById("explore-tags").innerHTML = ""
     for t in @tags
       div = document.createElement "div"
       div.innerText = t
@@ -452,7 +465,8 @@ class @Explore
       #span = document.createElement "span"
       #span.innerText = t.count
       #div.appendChild span
-      document.getElementById("explore-tags").appendChild div
+      if document.getElementById("explore-tags")?
+        document.getElementById("explore-tags").appendChild div
       do (t,div)=>
         div.addEventListener "click",()=>
           index = @active_tags.indexOf(t)
