@@ -94,7 +94,7 @@ this.Documentation = class Documentation {
   }
 
   getDocumentationLanguage(lang) {
-    if (["fr", "de", "pl", "it", "pt", "ru", "en"].indexOf(lang) >= 0) {
+    if (["es", "fr", "de", "pl", "it", "pt", "ru", "en"].indexOf(lang) >= 0) {
       return lang;
     } else {
       return "en";

@@ -107,7 +107,6 @@ html(lang=language)
       img.logo#logo(src="/img/dh-logo.svg" alt="Digital House Game" title="Digital House Game")
 
       div.titlemenu
-        li#menu-explore.selected(title=translator.get("Explore")) <i class="fa fa-search"></i><br /><span>#{translator.get("Explore")}</span>
         li#menu-projects(title=translator.get("Create")) <i class="fa fa-code"></i><br /><span>#{translator.get("Create")}</span>
         li#menu-tutorials(title=translator.get("Tutorials")) <i class="fa fa-lightbulb"></i><br /><span>#{translator.get("Tutorials")}</span>
         li#menu-help(title=translator.get("Documentation")) <i class="fa fa-book-open"></i><br /><span>#{translator.get("Documentation")}</span>
@@ -217,9 +216,9 @@ html(lang=language)
           h2 #{translator.get("So what now?")}
           br
           div.button#home-action-explore
-            i.fa.fa-search
+            i.fa.fa-book-open
             br
-            span #{translator.get("Explore public projects")}
+            span #{translator.get("Documentation")}
           div.button#home-action-create
             i.fa.fa-pencil-alt
             br

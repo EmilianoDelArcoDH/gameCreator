@@ -8,7 +8,7 @@ class @Explore
 
     @get("explore-back-button").addEventListener "click",()=>
       @closeDetails()
-      @app.appui.setMainSection "explore",true
+      @app.appui.setMainSection "home",true
 
     @sort = "hot"
     @active_tags = []

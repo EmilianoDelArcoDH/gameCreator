@@ -5,7 +5,7 @@ AppUI = class AppUI {
     var advanced, j, k, len, len1, ref, ref1, s;
     this.app = app1;
     this.sections = ["code", "sprites", "maps", "assets", "sounds", "music", "doc", "sync", "options", "publish", "tabs"];
-    this.menuoptions = ["home", "explore", "projects", "help", "tutorials", "about", "usersettings"];
+    this.menuoptions = ["home", "projects", "help", "tutorials", "about", "usersettings"];
     ref = this.sections;
     for (j = 0, len = ref.length; j < len; j++) {
       s = ref[j];
@@ -43,9 +43,7 @@ AppUI = class AppUI {
         e = document.getElementById(`menu-${s}`);
         if (e != null) {
           return e.addEventListener("click", (event) => {
-            if (window.ms_standalone && s === "explore") {
-              return window.open("https://microstudio.dev/explore/", "_blank");
-            } else if (window.ms_standalone && s === "home") {
+            if (window.ms_standalone && s === "home") {
               return window.open("https://microstudio.dev", "_blank");
             } else {
               return this.setMainSection(s, true);
@@ -115,7 +113,7 @@ AppUI = class AppUI {
       return input.click();
     });
     this.setAction("home-action-explore", () => {
-      return this.setMainSection("explore");
+      return this.setMainSection("help");
     });
     this.setAction("home-action-create", () => {
       return this.setMainSection("projects");

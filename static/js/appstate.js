@@ -29,6 +29,7 @@ this.AppState = class AppState {
         }
         if (history.state.name === "explore") {
           this.app.explore.closeProject();
+          return this.app.appui.setMainSection("help");
         }
         return this.app.appui.setMainSection((function(p) {
           return {
@@ -135,8 +136,15 @@ this.AppState = class AppState {
       history.replaceState({
         name: "project_details"
       }, "", location.pathname);
+    } else if (location.pathname.startsWith("/explore/") || location.pathname === "/explore") {
+      history.replaceState({
+        name: "documentation"
+      }, "", "/documentation/");
+      this.app.appui.setMainSection("help");
+      this.stateInitialized();
+      return;
     } else {
-      ref = ["about", "tutorials", "explore", "documentation"];
+      ref = ["about", "tutorials", "documentation"];
       for (i = 0, len = ref.length; i < len; i++) {
         p = ref[i];
         if (location.pathname.startsWith(`/${p}/`) || location.pathname === `/${p}`) {

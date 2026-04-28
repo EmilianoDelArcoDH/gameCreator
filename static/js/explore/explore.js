@@ -9,7 +9,7 @@ this.Explore = class Explore {
     });
     this.get("explore-back-button").addEventListener("click", () => {
       this.closeDetails();
-      return this.app.appui.setMainSection("explore", true);
+      return this.app.appui.setMainSection("home", true);
     });
     this.sort = "hot";
     this.active_tags = [];

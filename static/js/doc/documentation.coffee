@@ -67,7 +67,7 @@ class @Documentation
     return
 
   getDocumentationLanguage:(lang)->
-    if lang in ["fr","de","pl","it","pt","ru","en"] then lang else "en"
+    if lang in ["es","fr","de","pl","it","pt","ru","en"] then lang else "en"
 
   getDocumentationUrls:(id,lang)->
     if id.startsWith("http")

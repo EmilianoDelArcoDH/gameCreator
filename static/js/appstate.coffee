@@ -20,6 +20,7 @@ class @AppState
             @app.appui.backToProjectList()
         if history.state.name == "explore"
           @app.explore.closeProject()
+          return @app.appui.setMainSection "help"
         @app.appui.setMainSection ((p)->{"documentation":"help"}[p] or p)(history.state.name)
       else if history.state.name == "home"
         @app.appui.setMainSection "home"
@@ -99,8 +100,13 @@ class @AppState
     else if location.pathname.startsWith("/i/")
       @app.appui.setMainSection("explore",false)
       history.replaceState {name:"project_details"},"",location.pathname
+    else if location.pathname.startsWith("/explore/") or location.pathname == "/explore"
+      history.replaceState {name:"documentation"},"","/documentation/"
+      @app.appui.setMainSection("help")
+      @stateInitialized()
+      return
     else
-      for p in ["about","tutorials","explore","documentation"]
+      for p in ["about","tutorials","documentation"]
         if location.pathname.startsWith("/#{p}/") or location.pathname == "/#{p}"
           history.replaceState {name:p},"",location.pathname
           if p == "explore"

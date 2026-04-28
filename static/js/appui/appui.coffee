@@ -16,7 +16,6 @@ class AppUI
 
     @menuoptions = [
       "home"
-      "explore"
       "projects"
       "help"
       "tutorials"
@@ -47,9 +46,7 @@ class AppUI
         e = document.getElementById("menu-#{s}")
         if e?
           e.addEventListener "click",(event)=>
-            if window.ms_standalone and s == "explore"
-              window.open "https://microstudio.dev/explore/","_blank"
-            else if window.ms_standalone and s == "home"
+            if window.ms_standalone and s == "home"
               window.open "https://microstudio.dev","_blank"
             else
               @setMainSection(s,true)
@@ -115,7 +112,7 @@ class AppUI
       input.click()
 
     @setAction "home-action-explore",()=>
-      @setMainSection("explore")
+      @setMainSection("help")
 
     @setAction "home-action-create",()=>
       @setMainSection("projects")
