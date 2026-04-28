@@ -149,14 +149,20 @@ class @Documentation
       list.push node
 
     for node in list
-      node.textContent = node.textContent.replace(/microStudio/g,"Digital House Game").replace(/Microstudio/g,"Digital House Game")
+      node.textContent = @replaceBrandingText node.textContent
 
-    attrs = ["alt","title"]
+    attrs = ["alt","title","href"]
     nodes = element.querySelectorAll "*"
     for node in nodes
       for attr in attrs
         if node.hasAttribute attr
-          node.setAttribute attr,node.getAttribute(attr).replace(/microStudio/g,"Digital House Game").replace(/Microstudio/g,"Digital House Game")
+          node.setAttribute attr,@replaceBrandingText node.getAttribute(attr)
+
+  replaceBrandingText:(text)->
+    text
+      .replace(/https:\/\/microstudio\.io\/nickname\/game_id\//g,"https://gamecreator.io/nickname/game_id/")
+      .replace(/microStudio/g,"Digital House Game")
+      .replace(/Microstudio/g,"Digital House Game")
 
   buildToc:()->
     element = document.getElementById("documentation")

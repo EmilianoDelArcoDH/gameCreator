@@ -195,19 +195,23 @@ https://microstudio.dev/documentation/
     }
     for (i = 0, len1 = ref1.length; i < len1; i++) {
       node = ref1[i];
-      node.textContent = node.textContent.replace(/microStudio/g, "Digital House Game").replace(/Microstudio/g, "Digital House Game");
+      node.textContent = this.replaceBrandingText(node.textContent);
     }
-    attrs = ["alt", "title"];
+    attrs = ["alt", "title", "href"];
     nodes = element.querySelectorAll("*");
     for (j = 0, len2 = nodes.length; j < len2; j++) {
       node = nodes[j];
       for (i = 0, len1 = attrs.length; i < len1; i++) {
         attr = attrs[i];
         if (node.hasAttribute(attr)) {
-          node.setAttribute(attr, node.getAttribute(attr).replace(/microStudio/g, "Digital House Game").replace(/Microstudio/g, "Digital House Game"));
+          node.setAttribute(attr, this.replaceBrandingText(node.getAttribute(attr)));
         }
       }
     }
+  }
+
+  replaceBrandingText(text) {
+    return text.replace(/https:\/\/microstudio\.io\/nickname\/game_id\//g, "https://gamecreator.io/nickname/game_id/").replace(/microStudio/g, "Digital House Game").replace(/Microstudio/g, "Digital House Game");
   }
 
   buildToc() {
