@@ -191,6 +191,22 @@ this.FileStorage = (function() {
     })(this));
   };
 
+  FileStorage.prototype.copyFolder = function(source, dest, callback) {
+    var dest_path, source_path;
+    source = this.sanitize(source);
+    dest = this.sanitize(dest);
+    source_path = this.folder + "/" + source;
+    dest_path = this.folder + "/" + dest;
+    return fs.cp(source_path, dest_path, {
+      recursive: true,
+      force: true
+    }, function(err) {
+      if (callback != null) {
+        return callback(err);
+      }
+    });
+  };
+
   return FileStorage;
 
 })();

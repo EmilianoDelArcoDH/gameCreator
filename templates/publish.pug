@@ -1,4 +1,12 @@
 div.publish-box#publish-box-online
+  div.action-box#submission-box
+    div.publish-button#submit-project-button
+      i.fa.fa-paper-plane
+      | #{translator.get("Entregar proyecto")}
+    div.publish-text #{translator.get("Crea una copia congelada para que el docente la revise.")}
+    h3 #{translator.get("Link de revisión")}
+    a.submission-link(target="_blank")#submission-review-link
+
   div.action-box#publish-box
     div.publish-button#publish-button
       i.fa.fa-eye

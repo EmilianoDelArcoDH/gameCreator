@@ -7,6 +7,9 @@ this.Publish = class Publish {
     this.app.appui.setAction("unpublish-button", () => {
       return this.setProjectPublic(false);
     });
+    this.app.appui.setAction("submit-project-button", () => {
+      return this.submitProject();
+    });
     this.tags_validator = new InputValidator(document.getElementById("publish-add-tags"), document.getElementById("publish-add-tags-button"), null, (value) => {
       return this.addTags(value[0]);
     });
@@ -48,6 +51,7 @@ this.Publish = class Publish {
     public_url = `${location.origin.replace(".dev", ".io")}/i/${this.app.project.owner.nick}/${this.app.project.slug}/`;
     document.getElementById("publish-public-link").href = public_url;
     document.getElementById("publish-public-link").innerText = public_url;
+    this.updateSubmissionLink(project.properties != null ? project.properties.last_submission_url : null);
     document.querySelector("#publish-box-textarea").value = project.description;
     this.updateTags();
     project.addListener(this);
@@ -210,6 +214,47 @@ this.Publish = class Publish {
           return this.loadProject(this.app.project);
         }
       });
+    }
+  }
+
+  submitProject() {
+    var button;
+    if (this.app.project == null) {
+      return;
+    }
+    this.checkDescriptionSave(true);
+    button = document.getElementById("submit-project-button");
+    button.classList.add("disabled");
+    return this.app.client.sendRequest({
+      name: "submit_project",
+      project: this.app.project.id
+    }, (msg) => {
+      button.classList.remove("disabled");
+      if (msg.name === "project_submitted" && msg.url != null) {
+        return this.updateSubmissionLink(location.origin + msg.url);
+      } else if (msg.error != null) {
+        return alert(this.app.translator.get(msg.error));
+      }
+    });
+  }
+
+  updateSubmissionLink(url) {
+    var link;
+    link = document.getElementById("submission-review-link");
+    if (link == null) {
+      return;
+    }
+    if (url != null) {
+      if (url.indexOf("http") !== 0) {
+        url = location.origin + url;
+      }
+      link.href = url;
+      link.innerText = url;
+      return link.style.display = "inline-block";
+    } else {
+      link.removeAttribute("href");
+      link.innerText = "Todavía no hay una entrega creada.";
+      return link.style.display = "inline-block";
     }
   }
 

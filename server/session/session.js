@@ -1,4 +1,4 @@
-var ForumSession, JSZip, ProjectManager, RegexLib, RelayService, SHA256;
+var ForumSession, JSZip, ProjectManager, RegexLib, RelayService, SHA256, crypto;
 
 SHA256 = require("crypto-js/sha256");
 
@@ -11,6 +11,8 @@ ForumSession = require(__dirname + "/../forum/forumsession.js");
 JSZip = require("jszip");
 
 RelayService = require(__dirname + "/../relay/relayservice.js");
+
+crypto = require("crypto");
 
 this.Session = class Session {
   constructor(server, socket) {
@@ -115,6 +117,9 @@ this.Session = class Session {
     });
     this.register("set_project_public", (msg) => {
       return this.setProjectPublic(msg);
+    });
+    this.register("submit_project", (msg) => {
+      return this.submitProject(msg);
     });
     this.register("set_project_tags", (msg) => {
       return this.setProjectTags(msg);
@@ -977,6 +982,61 @@ this.Session = class Session {
     }
   }
 
+  submitProject(data) {
+    var project, slug, token;
+    if (this.user == null) {
+      return this.sendError("not connected", data.request_id);
+    }
+    if (data.project == null) {
+      return this.sendError("project not found", data.request_id);
+    }
+    project = this.user.findProject(data.project);
+    if (project == null) {
+      return this.sendError("project not found", data.request_id);
+    }
+    token = crypto.randomBytes(12).toString("hex");
+    slug = `${project.slug}-entrega-${Date.now().toString(36)}`;
+    return this.content.createProject(this.user, {
+      title: `${project.title} - entrega`,
+      slug: slug,
+      public: false,
+      orientation: project.orientation,
+      aspect: project.aspect,
+      type: "submission",
+      language: project.language,
+      graphics: project.graphics,
+      networking: project.networking,
+      libs: JSON.parse(JSON.stringify(project.libs || [])),
+      tabs: JSON.parse(JSON.stringify(project.tabs || {})),
+      plugins: JSON.parse(JSON.stringify(project.plugins || {})),
+      libraries: JSON.parse(JSON.stringify(project.libraries || {})),
+      description: project.description || ""
+    }, (submission) => {
+      submission.set("code", token);
+      submission.set("files", JSON.parse(JSON.stringify(project.files || {})));
+      submission.set("properties", {
+        submission: true,
+        source_project: project.id,
+        source_title: project.title,
+        submitted_at: Date.now(),
+        review_token: token
+      });
+      return this.content.files.copyFolder(`${this.user.id}/${project.id}`, `${this.user.id}/${submission.id}`, (err) => {
+        if (err != null) {
+          return this.sendError("could not create submission", data.request_id);
+        }
+        project.setProperty("last_submission_url", `/review/${token}/`);
+        return this.send({
+          name: "project_submitted",
+          project: project.id,
+          submission: submission.id,
+          url: `/review/${token}/`,
+          request_id: data.request_id
+        });
+      });
+    }, true);
+  }
+
   setProjectApproved(data) {
     var project;
     if (this.user == null) {
@@ -1198,7 +1258,7 @@ this.Session = class Session {
     list = [];
     for (j = 0, len1 = source.length; j < len1; j++) {
       p = source[j];
-      if (!p.deleted) {
+      if (!p.deleted && !((p.properties != null) && p.properties.submission)) {
         list.push({
           id: p.id,
           owner: {
@@ -1237,7 +1297,7 @@ this.Session = class Session {
     source = this.user.listProjectLinks();
     for (k = 0, len2 = source.length; k < len2; k++) {
       link = source[k];
-      if (!link.project.deleted) {
+      if (!link.project.deleted && !((link.project.properties != null) && link.project.properties.submission)) {
         p = link.project;
         list.push({
           id: p.id,

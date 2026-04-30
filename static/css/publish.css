@@ -58,6 +58,10 @@
   cursor: default ;
 }
 
+#submission-box .publish-button {
+  background: var(--dh-blue, #3333ff);
+}
+
 .publish-text {
   margin-top: 20px ;
   font-style: italic ;
@@ -115,6 +119,14 @@
   background-repeat: no-repeat;
   background-size: contain ;
   background-position: center ;
+}
+
+.publish-box a.submission-link {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  margin-top: 8px;
+  word-break: break-all;
 }
 
 .publish-box .validate-button-container {

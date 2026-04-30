@@ -145,6 +145,8 @@ this.Server = class Server {
     app.use("/lib/fontlib/ubuntu", express.static("node_modules/@fontsource/ubuntu"));
     app.use("/lib/fontlib/ubuntu-mono", express.static("node_modules/@fontsource/ubuntu-mono"));
     app.use("/lib/fontlib/source-sans-pro", express.static("node_modules/@fontsource/source-sans-pro"));
+    app.use("/lib/fontlib/montserrat", express.static("node_modules/@fontsource/montserrat"));
+    app.use("/lib/fontlib/archivo", express.static("node_modules/@fontsource/archivo"));
     app.use("/lib/fontlib/fontawesome", express.static("node_modules/@fortawesome/fontawesome-free"));
     app.use("/lib/ace", express.static("node_modules/ace-builds/src-min"));
     app.use("/lib/marked/marked.js", express.static("node_modules/marked/marked.min.js"));

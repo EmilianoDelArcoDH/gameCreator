@@ -287,6 +287,15 @@ this.WebApp = class WebApp {
         gamelist: this.server.content.getConsoleGameList()
       }));
     });
+    this.app.get(/^\/review\/([a-f0-9]{24})\/?$/, (req, res) => {
+      var project, token;
+      token = req.params[0];
+      project = this.findSubmissionByToken(token);
+      if (project == null) {
+        return this.return404(req, res);
+      }
+      return res.redirect(`/${project.owner.nick}/${project.slug}/${project.code}/?review=1`);
+    });
     // /user/project[/code/]
     this.app.get(/^\/[^\/\|\?\&\.]+\/[^\/\|\?\&\.]+(\/([^\/\|\?\&\.]+\/?)?)?$/, (req, res) => {
       var access, embedder_policy, encoding, file, jsfiles, l, len3, lib, manager, o, pathcode, poster, prog_lang, project, redir, ref4, user;
@@ -932,6 +941,18 @@ this.WebApp = class WebApp {
       };
     }
     this.return404(req, res);
+    return null;
+  }
+
+  findSubmissionByToken(token) {
+    var key, p, ref;
+    ref = this.server.content.projects;
+    for (key in ref) {
+      p = ref[key];
+      if (!p.deleted && (p.properties != null) && p.properties.submission && p.properties.review_token === token) {
+        return p;
+      }
+    }
     return null;
   }
 
