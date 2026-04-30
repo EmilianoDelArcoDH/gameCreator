@@ -1,5 +1,5 @@
 {
-  "name": "microstudio",
+  "name": "gamecreator",
   "version": "1.0.0",
   "description": "Web server",
   "main": "server.js",
@@ -47,5 +47,5 @@
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "pmgl"
+  "author": "Emiliano Del Arco"
 }
