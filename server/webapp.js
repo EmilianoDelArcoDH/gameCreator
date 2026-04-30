@@ -139,7 +139,7 @@ this.WebApp = class WebApp {
           project_moderation: this.server.config.project_moderation === true,
           dev_domain: dev_domain,
           run_domain: run_domain,
-          default_project_language: this.server.config.default_project_language,
+          default_project_language: this.server.config.default_project_language || "javascript",
           tutorials_root_url: this.server.config.tutorials_root_url
         });
         return res.send(page);
@@ -165,7 +165,7 @@ this.WebApp = class WebApp {
           project_moderation: this.server.config.project_moderation === true,
           dev_domain: dev_domain,
           run_domain: run_domain,
-          default_project_language: this.server.config.default_project_language,
+          default_project_language: this.server.config.default_project_language || "javascript",
           tutorials_root_url: this.server.config.tutorials_root_url
         });
       }

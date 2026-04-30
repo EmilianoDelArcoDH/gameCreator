@@ -124,7 +124,7 @@ class @WebApp
           project_moderation: @server.config.project_moderation == true
           dev_domain: dev_domain
           run_domain: run_domain
-          default_project_language: @server.config.default_project_language
+          default_project_language: @server.config.default_project_language or "javascript"
           tutorials_root_url: @server.config.tutorials_root_url
 
         return res.send page
@@ -150,7 +150,7 @@ class @WebApp
           project_moderation: @server.config.project_moderation == true
           dev_domain: dev_domain
           run_domain: run_domain
-          default_project_language: @server.config.default_project_language
+          default_project_language: @server.config.default_project_language or "javascript"
           tutorials_root_url: @server.config.tutorials_root_url
 
       res.send @home_page[lang]

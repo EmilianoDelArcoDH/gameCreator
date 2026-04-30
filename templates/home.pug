@@ -459,7 +459,8 @@ html(lang=language)
               h3 #{translator.get("Language support")}
               select#createprojectoption-language
                 each val,key in language_engines
-                  option(value=key) #{translator.get(val.title)}
+                  if key.indexOf("microscript") !== 0 && key !== "lua"
+                    option(value=key selected=(key === "javascript")) #{translator.get(val.title)}
 
             div.createprojectoption#create-project-option-graphics
               h3 #{translator.get("Graphics library")}
